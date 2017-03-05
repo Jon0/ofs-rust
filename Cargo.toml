@@ -7,5 +7,3 @@ authors = ["Jon0"]
 [dependencies]
 
 fuse = "0.3"
-nanomsg = "0.6.1"
-

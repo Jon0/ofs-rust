@@ -1,20 +1,23 @@
 extern crate fuse;
-extern crate nanomsg;
+
+use std::net::{TcpListener, TcpStream};
 
 
-struct Map<T> {
-    hash: fn (T) -> u64,
-    cmp: fn (T, T) -> bool,
-    data: Vec<u64>,
-}
+fn handle_client(stream: TcpStream) {
 
-
-struct Table<T> {
-    rows: Vec<T>,
-    maps: Vec<Map<T>>,
 }
 
 
 fn main() {
-    let table: Table<i64>;
+    let listener = TcpListener::bind("127.0.0.1:2204").unwrap();
+
+    // accept connections and process them, spawning a new thread for each one
+    for stream in listener.incoming() {
+        match stream {
+            Ok(stream) => {
+                handle_client(stream);
+            }
+            Err(e) => { /* connection failed */ }
+        }
+    }
 }
