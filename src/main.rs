@@ -29,6 +29,7 @@ impl SockAddr4 {
 
 /*
  * readable stream
+ * add generic address type
  */
 pub struct SockStream {
     fd: i32
@@ -62,6 +63,7 @@ impl SockAcceptor {
             let fd = socket(AF_INET, SOCK_STREAM, 0);
             let err = addr.bind(fd);
             if err < 0 {
+                println!("error binding socket");
                 close(fd);
             }
             else {
