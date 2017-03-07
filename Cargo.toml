@@ -7,3 +7,4 @@ authors = ["Jon0"]
 [dependencies]
 
 fuse = "0.3"
+libc = "0.2"
