@@ -1,12 +1,14 @@
 extern crate fuse;
 extern crate libc;
 
+pub mod message;
+
 use std::mem;
 use libc::*;
 
 
 pub struct SockAddr4 {
-
+    port: u16,
 }
 
 
@@ -15,7 +17,7 @@ impl SockAddr4 {
         let addr = sockaddr_in {
             sin_family: AF_INET as u16,
             sin_addr: in_addr { s_addr: 0 },
-            sin_port: 3648,
+            sin_port: self.port.to_be(),
             sin_zero: [0; 8]
         };
         unsafe {
@@ -37,13 +39,16 @@ pub struct SockStream {
 
 
 impl SockStream {
-    pub fn read<T>(&self, mut obj: &mut T) {
+    pub fn read<T>(&self, mut obj: &mut T) -> Result<usize, i32> {
         unsafe {
             let obj_ptr: *mut c_void = mem::transmute(&mut obj);
             let obj_size = mem::size_of::<T>() as usize;
             let read_size = read(self.fd, obj_ptr, obj_size);
-            if read_size < obj_size as isize {
-                println!("size mismatch");
+            if read_size < 0 {
+                return Err(read_size as i32);
+            }
+            else {
+                return Ok(read_size as usize);
             }
         }
     }
@@ -57,19 +62,19 @@ pub struct SockAcceptor {
 
 
 impl SockAcceptor {
-    pub fn open() -> SockAcceptor {
-        let addr = SockAddr4 {};
+    pub fn open() -> Result<SockAcceptor, i32> {
+        let addr = SockAddr4 { port: 1234 };
         unsafe {
             let fd = socket(AF_INET, SOCK_STREAM, 0);
             let err = addr.bind(fd);
             if err < 0 {
-                println!("error binding socket");
                 close(fd);
+                return Err(err);
             }
             else {
                 listen(fd, 5);
+                return Ok(SockAcceptor { fd: fd });
             }
-            return SockAcceptor { fd: fd };
         }
     }
 
@@ -93,11 +98,16 @@ impl SockAcceptor {
 
 
 fn main() {
-    let acceptor = SockAcceptor::open();
-    loop {
-        let socket = acceptor.accept();
-        println!("socket connected");
-        let mut input: u32 = 0;
-        socket.read(&mut input);
+    match SockAcceptor::open() {
+        Ok(acceptor) => loop {
+            let socket = acceptor.accept();
+            println!("socket connected");
+            let mut input: u32 = 0;
+            match socket.read(&mut input) {
+                Ok(count) => println!("Read: {}", count),
+                Err(err) => println!("Error: {}", err),
+            }
+        },
+        Err(err) => println!("Error: {}", err),
     }
 }
