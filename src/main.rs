@@ -7,13 +7,18 @@ use std::mem;
 use libc::*;
 
 
+pub trait Bindable {
+    fn bind(&self, fd: i32) -> i32;
+}
+
+
 pub struct SockAddr4 {
     port: u16,
 }
 
 
-impl SockAddr4 {
-    pub fn bind(&self, fd: i32) -> i32 {
+impl Bindable for SockAddr4 {
+    fn bind(&self, fd: i32) -> i32 {
         let addr = sockaddr_in {
             sin_family: AF_INET as u16,
             sin_addr: in_addr { s_addr: 0 },
