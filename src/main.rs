@@ -67,8 +67,7 @@ pub struct SockAcceptor {
 
 
 impl SockAcceptor {
-    pub fn open() -> Result<SockAcceptor, i32> {
-        let addr = SockAddr4 { port: 1234 };
+    pub fn open<T: Bindable>(addr: &T) -> Result<SockAcceptor, i32> {
         unsafe {
             let fd = socket(AF_INET, SOCK_STREAM, 0);
             let err = addr.bind(fd);
@@ -103,7 +102,8 @@ impl SockAcceptor {
 
 
 fn main() {
-    match SockAcceptor::open() {
+    let addr = SockAddr4 { port: 1234 };
+    match SockAcceptor::open(&addr) {
         Ok(acceptor) => loop {
             let socket = acceptor.accept();
             println!("socket connected");
