@@ -1,7 +1,7 @@
 use std::mem;
 
 pub trait InputStream {
-    
+    fn read<T>(&self, buf: &mut T) -> Result<usize, i32>;
 }
 
 
