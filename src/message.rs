@@ -1,12 +1,23 @@
 use std::mem;
 
+
+pub struct PartialTransfer {
+    transferred: u32,
+}
+
+
 pub trait InputStream {
-    fn read<T>(&self, buf: &mut T) -> Result<usize, i32>;
+    fn read<T>(&mut self, buf: &mut T) -> Result<usize, i32>;
+}
+
+
+pub trait OutputStream {
+    fn write<T>(&mut self, buf: &mut T) -> Result<usize, i32>;
 }
 
 
 pub trait Readable {
-    fn read(&self, buf: &mut [u8]) -> Result<usize, i32>;
+    fn read(&mut self, buf: &mut [u8]) -> Result<usize, i32>;
 }
 
 
@@ -20,8 +31,25 @@ pub struct MsgHeader {
 
 
 impl MsgHeader {
-    pub fn read_some<T: Readable>(&mut self, stream: &T) {
+    pub fn read_some<T: InputStream>(&mut self, stream: &mut T) {
+        stream.read(&mut self.data_size);
+        stream.read(&mut self.data_hash);
+        stream.read(&mut self.data_type);
+        stream.read(&mut self.event_type);
+        stream.read(&mut self.event_id);
+    }
 
+
+    pub fn write_some<T: OutputStream>(&self, stream: &mut T) {
+
+    }
+
+
+    pub fn as_bytes(&self) -> &[u8; 8] {
+        unsafe {
+            let mut raw_bytes : &[u8; 8] = mem::transmute(&self);
+            return raw_bytes;
+        }
     }
 }
 
@@ -37,9 +65,7 @@ impl PartialMessage {
     }
 
 
-    pub fn read_some<T: Readable>(&mut self, stream: &T) {
-        unsafe {
-            let mut raw_bytes : &[u8; 8] = mem::transmute(&mut self.head);
-        }
+    pub fn read_some<T: InputStream>(&mut self, stream: &mut T) {
+        self.head.read_some(stream);
     }
 }
