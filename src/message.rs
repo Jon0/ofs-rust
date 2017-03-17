@@ -12,7 +12,7 @@ pub trait InputStream {
 
 
 pub trait OutputStream {
-    fn write<T>(&mut self, buf: &mut T) -> Result<usize, i32>;
+    fn write<T>(&mut self, buf: &T) -> Result<usize, i32>;
 }
 
 
@@ -41,7 +41,11 @@ impl MsgHeader {
 
 
     pub fn write_some<T: OutputStream>(&self, stream: &mut T) {
-
+        stream.write(&self.data_size);
+        stream.write(&self.data_hash);
+        stream.write(&self.data_type);
+        stream.write(&self.event_type);
+        stream.write(&self.event_id);
     }
 
 
