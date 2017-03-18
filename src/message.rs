@@ -73,3 +73,13 @@ impl PartialMessage {
         self.head.read_some(stream);
     }
 }
+
+
+pub struct Server {
+
+}
+
+
+pub trait Message {
+    fn apply(server: Server);
+}
