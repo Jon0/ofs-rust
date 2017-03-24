@@ -6,6 +6,17 @@ pub struct PartialTransfer {
 }
 
 
+
+pub trait Serializable {
+
+}
+
+
+fn read_serial<T: Serializable, I: InputStream>(obj: &mut T, input: &mut I, p: &mut PartialTransfer, depth: usize) {
+
+}
+
+
 pub trait InputStream {
     fn read<T>(&mut self, buf: &mut T) -> Result<usize, i32>;
 }
@@ -13,11 +24,6 @@ pub trait InputStream {
 
 pub trait OutputStream {
     fn write<T>(&mut self, buf: &T) -> Result<usize, i32>;
-}
-
-
-pub trait Readable {
-    fn read(&mut self, buf: &mut [u8]) -> Result<usize, i32>;
 }
 
 
