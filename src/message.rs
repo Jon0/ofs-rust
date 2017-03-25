@@ -86,6 +86,13 @@ pub struct Server {
 }
 
 
+impl Server {
+    pub fn init() -> Server {
+        return Server{};
+    }
+}
+
+
 pub trait Message {
     fn apply(server: Server);
 }

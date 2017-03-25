@@ -5,6 +5,7 @@ pub mod message;
 
 use std::mem;
 use libc::*;
+use message::*;
 
 
 pub trait Bindable {
@@ -103,6 +104,7 @@ impl SockAcceptor {
 
 fn main() {
     let addr = SockAddr4 { port: 1234 };
+    let serv = Server::init();
     match SockAcceptor::open(&addr) {
         Ok(acceptor) => loop {
             let socket = acceptor.accept();
