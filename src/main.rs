@@ -102,18 +102,23 @@ impl SockAcceptor {
 }
 
 
+fn read_socket(socket: &mut SockStream, state: &mut Server) {
+    let mut input: u32 = 0;
+    match socket.read(&mut input) {
+        Ok(count) => println!("Read: {}", count),
+        Err(err) => println!("Error: {}", err),
+    }
+}
+
+
 fn main() {
     let addr = SockAddr4 { port: 1234 };
-    let serv = Server::init();
+    let mut serv = Server::init();
     match SockAcceptor::open(&addr) {
         Ok(acceptor) => loop {
-            let socket = acceptor.accept();
+            let mut socket = acceptor.accept();
             println!("socket connected");
-            let mut input: u32 = 0;
-            match socket.read(&mut input) {
-                Ok(count) => println!("Read: {}", count),
-                Err(err) => println!("Error: {}", err),
-            }
+            read_socket(&mut socket, &mut serv);
         },
         Err(err) => println!("Error: {}", err),
     }
