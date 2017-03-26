@@ -111,6 +111,11 @@ fn read_socket(socket: &mut SockStream, state: &mut Server) {
 }
 
 
+fn read_message(socket: &mut SockStream) -> AnyMessage {
+    return AnyMessage::init();
+}
+
+
 fn main() {
     let addr = SockAddr4 { port: 1234 };
     let mut serv = Server::init();

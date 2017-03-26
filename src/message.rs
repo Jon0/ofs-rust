@@ -96,3 +96,15 @@ impl Server {
 pub trait Message {
     fn apply(server: Server);
 }
+
+
+pub struct AnyMessage {
+    msg_type: u32,
+}
+
+
+impl AnyMessage {
+    pub fn init() -> AnyMessage {
+        return AnyMessage{ msg_type: 0 };
+    }
+}
