@@ -102,16 +102,12 @@ impl SockAcceptor {
 }
 
 
-fn read_socket(socket: &mut SockStream, state: &mut Server) {
+fn read_message(socket: &mut SockStream) -> AnyMessage {
     let mut input: u32 = 0;
     match socket.read(&mut input) {
         Ok(count) => println!("Read: {}", count),
         Err(err) => println!("Error: {}", err),
     }
-}
-
-
-fn read_message(socket: &mut SockStream) -> AnyMessage {
     return AnyMessage::init();
 }
 
@@ -123,7 +119,8 @@ fn main() {
         Ok(acceptor) => loop {
             let mut socket = acceptor.accept();
             println!("socket connected");
-            read_socket(&mut socket, &mut serv);
+            let msg = read_message(&mut socket);
+            msg.apply(&mut serv);
         },
         Err(err) => println!("Error: {}", err),
     }

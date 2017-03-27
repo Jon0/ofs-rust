@@ -94,7 +94,7 @@ impl Server {
 
 
 pub trait Message {
-    fn apply(server: Server);
+    fn apply(&self, server: &mut Server);
 }
 
 
@@ -106,5 +106,12 @@ pub struct AnyMessage {
 impl AnyMessage {
     pub fn init() -> AnyMessage {
         return AnyMessage{ msg_type: 0 };
+    }
+}
+
+
+impl Message for AnyMessage {
+    fn apply(&self, server: &mut Server) {
+
     }
 }
