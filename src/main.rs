@@ -1,6 +1,7 @@
 extern crate fuse;
 extern crate libc;
 
+pub mod epoll;
 pub mod message;
 pub mod socket;
 
