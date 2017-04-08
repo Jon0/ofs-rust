@@ -17,10 +17,9 @@ impl EventHandler {
 
 
     pub fn poll(&self) {
-        //let mut event = [epoll_event { events: 0, u64: 0 }; 32];
-        let mut event = epoll_event { events: 0, u64: 0 };
+        let mut event = [epoll_event { events: 0, u64: 0 }; 32];
         unsafe {
-            let result = epoll_wait(self.epollfd, &mut event, 1, -1);
+            let result = epoll_wait(self.epollfd, event.as_mut_ptr(), event.len() as i32, -1);
         }
 
     }
