@@ -5,6 +5,7 @@ pub mod epoll;
 pub mod message;
 pub mod socket;
 
+use epoll::*;
 use message::*;
 use socket::*;
 
@@ -20,8 +21,9 @@ fn read_message(socket: &mut SockStream) -> AnyMessage {
 
 
 fn main() {
-    let addr = SockAddr4::create(1234);
     let mut serv = Server::init();
+    let mut handler = EventHandler::create();
+    let addr = SockAddr4::create(1234);
     match SockAcceptor::open(&addr) {
         Ok(acceptor) => loop {
             let mut socket = acceptor.accept();

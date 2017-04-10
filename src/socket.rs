@@ -1,6 +1,8 @@
 use std::mem;
 use libc::*;
 
+use epoll::*;
+
 
 pub trait Bindable {
     fn bind(&self, fd: i32) -> i32;

@@ -1,7 +1,7 @@
 use libc::*;
 
 
-struct EventHandler {
+pub struct EventHandler {
     epollfd: i32,
 }
 
