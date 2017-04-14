@@ -16,8 +16,10 @@ impl EventHandler {
 
 
     pub fn add_source(&self, fd: i32) {
-        let mut ev = epoll_event {};
-        let err = epoll_ctl(self.epollfd, EPOLL_CTL_ADD, fd, &ev);
+        let mut ev = epoll_event { events: 0, u64: 0 };
+        unsafe {
+            let result = epoll_ctl(self.epollfd, EPOLL_CTL_ADD, fd, &mut ev);
+        }
     }
 
 
