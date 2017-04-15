@@ -32,3 +32,8 @@ impl EventHandler {
 
     }
 }
+
+
+pub trait EventSource {
+    fn listen(&self, handler: EventHandler);
+}
