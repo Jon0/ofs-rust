@@ -64,6 +64,13 @@ impl SockStream {
 }
 
 
+impl EventSource for SockStream {
+    fn listen(&self, handler: EventHandler) {
+
+    }
+}
+
+
 
 pub struct SockAcceptor {
     fd: i32,
@@ -101,5 +108,12 @@ impl SockAcceptor {
             let newfd = accept(self.fd, addr_ptr, addr_size_ptr);
             return SockStream { fd: newfd };
         }
+    }
+}
+
+
+impl EventSource for SockAcceptor {
+    fn listen(&self, handler: EventHandler) {
+
     }
 }
