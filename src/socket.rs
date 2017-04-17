@@ -66,7 +66,7 @@ impl SockStream {
 
 impl EventSource for SockStream {
     fn listen(&self, handler: EventHandler) {
-
+        handler.add_source(self.fd);
     }
 }
 
@@ -114,6 +114,6 @@ impl SockAcceptor {
 
 impl EventSource for SockAcceptor {
     fn listen(&self, handler: EventHandler) {
-
+        handler.add_source(self.fd);
     }
 }
