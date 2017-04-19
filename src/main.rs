@@ -27,6 +27,7 @@ fn main() {
     match SockAcceptor::open(&addr) {
         Ok(acceptor) => loop {
             let mut socket = acceptor.accept();
+            socket.listen(&mut handler);
             println!("socket connected");
             let msg = read_message(&mut socket);
             msg.apply(&mut serv);

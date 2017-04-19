@@ -35,5 +35,5 @@ impl EventHandler {
 
 
 pub trait EventSource {
-    fn listen(&self, handler: EventHandler);
+    fn listen(&self, handler: &mut EventHandler);
 }
