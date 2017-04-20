@@ -4,6 +4,16 @@ use libc::*;
 use epoll::*;
 
 
+fn create_addr(family: i32, addr: u32, port: u16) -> sockaddr_in {
+    return sockaddr_in {
+        sin_family: family as u16,
+        sin_addr: in_addr { s_addr: addr },
+        sin_port: port.to_be(),
+        sin_zero: [0; 8]
+    };
+}
+
+
 pub trait Bindable {
     fn bind(&self, fd: i32) -> i32;
 }
@@ -23,12 +33,7 @@ impl SockAddr4 {
 
 impl Bindable for SockAddr4 {
     fn bind(&self, fd: i32) -> i32 {
-        let addr = sockaddr_in {
-            sin_family: AF_INET as u16,
-            sin_addr: in_addr { s_addr: 0 },
-            sin_port: self.port.to_be(),
-            sin_zero: [0; 8]
-        };
+        let addr = create_addr(AF_INET, 0, self.port);
         unsafe {
             let addr_ptr: *const sockaddr =  mem::transmute(&addr);
             let addr_size = mem::size_of::<sockaddr_in>() as u32;
@@ -95,12 +100,7 @@ impl SockAcceptor {
 
 
     pub fn accept(&self) -> SockStream {
-        let mut addr = sockaddr_in {
-            sin_family: 0,
-            sin_addr: in_addr { s_addr: 0 },
-            sin_port: 0,
-            sin_zero: [0; 8]
-        };
+        let mut addr = create_addr(0, 0, 0);
         unsafe {
             let addr_ptr: *mut sockaddr = mem::transmute(&mut addr);
             let mut addr_size = mem::size_of::<sockaddr_in>() as u32;
