@@ -1,10 +1,14 @@
 extern crate fuse;
 extern crate libc;
+extern crate mio;
 
 pub mod epoll;
 pub mod message;
 pub mod socket;
 
+
+use mio::*;
+use mio::tcp::{TcpListener, TcpStream};
 use epoll::*;
 use message::*;
 use socket::*;
